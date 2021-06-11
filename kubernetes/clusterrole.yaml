@@ -1,0 +1,21 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cniep
+rules:
+  - apiGroups: ["*"]
+    resources:
+    - services
+    verbs:
+    - watch
+    - list
+    - get
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    verbs:
+    - watch
+    - list
+    - get
+ 

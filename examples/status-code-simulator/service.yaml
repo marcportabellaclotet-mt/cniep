@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    cniep/template: cniep
+    cniep/customfield-startsvcurl: https://www.google.com
+  labels:
+    app: cniep-test
+  name: cniep-test
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: cniep-test
+  sessionAffinity: None
+  type: ClusterIP

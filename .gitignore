@@ -1,0 +1,10 @@
+config/*
+build/*
+auto.sh
+html-templates/cniep2
+.terraform
+terraform.tfstate
+*.tfstate*
+terraform.tfvars
+.terraform/
+.terragrunt*

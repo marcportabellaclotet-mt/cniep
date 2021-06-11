@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Service Status</title>
+	<link href="cniep-statics/bootstrap@5.0.1/dist/css/bootstrap.css" rel="stylesheet" crossorigin="anonymous">
+	<script src="cniep-statics/bootstrap@5.0.1/dist/js/bootstrap.js"></script>
+	<script src="cniep-statics/jquery/jquery-3.2.1.min.js"></script>
+    <style>{{ template "styles" }}</style>
+	<div class="container">
+		<div style="text-align: center" class="page-header">
+			<h1>{{ .Code }} - {{ .Title }} </h1> </div>
+		<div id="serviceinfo" class="alert alert-info">
+		<div id="serverless" class="spinner-border text-info spinner-border-sm" role="status">
+		</div>
+ <strong>&nbsp;service : {{  .Details.ServiceName }} | deployment : {{  .Details.DeploymentName }} | namespace : {{ .Details.Namespace }} </strong> </div>
+		<div class="progressbar-wrapper clearfix">
+			<ul class="progressbar progressbar">
+				<li class="inactive" id="depact">Deployment inactive</li>
+				<li class="inactive" id="depstatus">Deployment status</li>
+				<li class="inactive" id="servicestatus">Service status</li>
+			</ul>
+		</div>
+		<div id="manageservices">
+		<button type="button" onclick="manageServices()" class="btn btn-success"><strong>Click here to start your service</strong></button>
+		</div>
+		<!-- Modal -->
+		<div class="modal" id="prizeModal" tabindex="-1" aria-labelledby="prizeModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title w-100 text-center" id="prizeModalLabel">CONGRATULATIONS</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body w-100 text-center"> <strong>YOU'RE GOOD, YOU'RE VERY GOOD YOU!!</strong> </div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="myBonus()">Get your prize</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+		var serverless = "{{ .Details.CustomFields.serverless }}";
+		if( serverless === "true" ) {
+		    document.getElementById("manageservices").style.visibility = "hidden";
+			document.getElementById("serverless").style.visibility = "visible";
+		}else{
+			document.getElementById("manageservices").style.visibility = "visible";
+			document.getElementById("serverless").style.visibility = "hidden";
+		}
+
+		getInfo();
+		var tid = setInterval(getInfo, 5000);
+        setTimeout(function() {
+						location.reload();
+					}, 45000);
+		var allowedKeys = {
+			37: 'left',
+			38: 'up',
+			39: 'right',
+			40: 'down',
+			65: 'a',
+			66: 'b'
+		};
+		var konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a'];
+		var konamiCodePosition = 0;
+		document.addEventListener('keydown', function(e) {
+			var key = allowedKeys[e.keyCode];
+			var requiredKey = konamiCode[konamiCodePosition];
+			if(key == requiredKey) {
+				konamiCodePosition++;
+				if(konamiCodePosition == konamiCode.length) {
+					activateCheats();
+					konamiCodePosition = 0;
+				}
+			} else {
+				konamiCodePosition = 0;
+			}
+		});
+
+		function myBonus() {
+			window.open('cniep-statics/surprise/index.html')
+		}
+		function manageServices() {
+			window.open('{{ .Details.CustomFields.startsvcurl }}')
+		}
+
+		function activateCheats() {
+			var myModal = new bootstrap.Modal(document.getElementById("prizeModal"), {});
+			myModal.show();
+		}
+		
+		function getInfo() {
+			$.getJSON('cniep-svc-info', function(data, status, xhr) {
+
+				if (data.details.desiredDeploymentReplicas > 0) {
+					depactclass = "active";
+					depacttext = `Deployment active<br>${data.details.desiredDeploymentReplicas} replicas configured`;
+				} else {
+					depactclass = "inactive";
+					depacttext = `Deployment inactive<br>${data.details.desiredDeploymentReplicas} replicas configured`;
+				}
+				if (data.details.currentDeploymentReplicas > 0) {
+					depstatusclass = "active";
+					depstatustext = `Deployment ready<br>${data.details.currentDeploymentReplicas}/${data.details.desiredDeploymentReplicas} replicas running`;
+				} else {
+					depstatusclass = "inactive";
+					depstatustext = `Deployment not ready<br>${data.details.currentDeploymentReplicas}/${data.details.desiredDeploymentReplicas} replicas running`;
+				}
+				if (depstatusclass == "active" && depactclass == "active") {
+					servicestatusclass = "active";
+					servicestatustext = "Service Status<br>ready";
+					setTimeout(function() {
+						location.reload();
+					}, 5000);
+				} else {
+					servicestatusclass = "inactive";
+					servicestatustext = "Service Status<br>not ready";
+				}
+				document.getElementById("depact").className = depactclass;
+				document.getElementById("depact").innerHTML = depacttext;
+				document.getElementById("depstatus").className = depstatusclass;
+				document.getElementById("depstatus").innerHTML = depstatustext;
+				document.getElementById("servicestatus").className = servicestatusclass;
+				document.getElementById("servicestatus").innerHTML = servicestatustext;
+			}).fail(function(jqXHR) {
+				if (jqXHR.getResponseHeader('cniep-response') == null ) {
+					document.getElementById("depact").className = "active";
+					document.getElementById("depact").innerHTML = "Deployment Active";
+					document.getElementById("depstatus").className = "active";
+					document.getElementById("depstatus").innerHTML = "Deployment Ready";
+					document.getElementById("servicestatus").className = "active";
+					document.getElementById("servicestatus").innerHTML = "Service Status<br>Ready";
+					setTimeout(function() {
+						location.reload();
+					}, 5000);
+				}
+			});
+		};
+			</script>
+</head>
+
+</html>

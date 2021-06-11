@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: cniep-test
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/custom-http-errors: "503"
+spec:
+  rules:
+    - host: cniep.example.com
+      http:
+        paths:
+        - backend:
+            serviceName: cniep-test
+            servicePort: 8080
+          path: /

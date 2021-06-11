@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cniep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cniep
+  template:
+    metadata:
+      labels:
+        app: cniep
+    spec:
+      serviceAccount: cniep
+      serviceAccountName: cniep
+      containers:
+      - image: cniep/cniep:v0.0.1 
+        imagePullPolicy: Always
+        name: cniep
+        env:
+        # If you are using AWS S3 to sync templates
+        #- name: AWS_DEFAULT_REGION
+        #  value: xxxxxx
+        #- name: AWS_ACCESS_KEY_ID
+        #  value: xxxxxx
+        #- name: AWS_SECRET_ACCESS_KEY
+        #  value: xxxxxx (can use k8s secrets to store the value)
+        ports:
+        - containerPort: 8082
+          protocol: TCP
+        resources:
+          

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cniep-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cniep-test
+  template:
+    metadata:
+      labels:
+        app: cniep-test
+    spec:
+      containers:
+      - image: marcportabellaclotet/http-response-code-simulator:latest
+        imagePullPolicy: Always
+        name: cniep-test
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:  
