@@ -15,7 +15,7 @@ spec:
       serviceAccount: cniep
       serviceAccountName: cniep
       containers:
-      - image: cniep/cniep:v0.0.1 
+      - image: marcportabellaclotet/cniep:latest 
         imagePullPolicy: Always
         name: cniep
         env:
