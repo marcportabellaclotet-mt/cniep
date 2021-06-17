@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/marcportabellaclotet-mt/cniep/updates/static/images/CNIEP-2.png"></img>
+  <img src="https://raw.githubusercontent.com/marcportabellaclotet-mt/cniep/master/static/images/CNIEP-2.png"></img>
 </p>
 <hr>
 <h3 align="center">CNIEP is a replacement for default nginx backend controller to display customized error pages</h3>
@@ -18,6 +18,8 @@
 - [How to template](#how-to-template)
 
 - [Supported template variables](#template-variables)
+
+- [Sync templates from S3 buckets](#sync-templates-from-s3-buckets)
 
 - [Build from source](#build-from-source)
 
@@ -109,7 +111,8 @@ metadata:
 | `customjsonresponse-xxx` | Renders a custom json response instead of a templated html page (status code specific)|
 | `customjsonresponse-global` | Renders a custom json response instead of a templated html page (all status codes)|
 | `cniep/s3-templatedir` |  Syncs templates stored in an AWS S3 bucket. i.e. cniep/s3-templatedir: s3://mys3bucket/cniep2|
-| `cniep/customfield-xxxx` |  Define custom variables to be used in error response pages. In the [template](how-to-template) section, there is more information about this|
+| `cniep/customfield-xxxx` | Define custom variables to be used in error response pages. In the [template](how-to-template) section, there is more information about this|
+| `cniep/forceresponsecode-xxx` | Forces the HTTP status code returned by the request |
 
 ---
 
@@ -183,7 +186,7 @@ mytemplate (template folder)
  [**cniep**] : This template renders an error page with information about the current deployment state.
 
 <p align="left">
-  <img width="500px" src="https://raw.githubusercontent.com/marcportabellaclotet-mt/cniep/updates/static/images/cniep-template.png"></img>
+  <img width="500px" src="https://raw.githubusercontent.com/marcportabellaclotet-mt/cniep/master/static/images/cniep-template.png"></img>
 </p>
 
  [**default**] : Simple clean template.
