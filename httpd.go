@@ -33,6 +33,7 @@ type errorPageDataDetails struct {
 	CustomErrorTemplate       string            `json:"customErrorTemplate"`
 	CustomJsonResponse        map[string]string `json:"customJsonResponse"`
 	CustomFields              map[string]string `json:"customFields"`
+	ForceResponseCode         map[string]string `json:"forceResponseCode"`
 }
 
 const (
@@ -84,22 +85,36 @@ func cniep(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	code := requestInfo.Code
-	codeInt, _ := strconv.Atoi(code)
+	if code == "" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	codeInt, err := strconv.Atoi(code)
 	if codeInt == 0 {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
+	if requestInfo.Details.ForceResponseCode[code] != "" {
+		forceResponseCode := requestInfo.Details.ForceResponseCode[code]
+		codeInt, err = strconv.Atoi(forceResponseCode)
+		if err != nil {
+			logrus.Error(fmt.Sprintf("Incorrect Annotation for service %v - cniep/forceresponsecode-%v : %v", requestInfo.Details.ServiceName, code, forceResponseCode))
+			logrus.Error(err.Error())
+			return
+		}
+	}
+
 	if requestInfo.Details.CustomJsonResponse[code] != "" {
 		w.Header().Set(ContentType, JSON)
-		body := requestInfo.Details.CustomJsonResponse[code]
 		w.WriteHeader(codeInt)
+		body := requestInfo.Details.CustomJsonResponse[code]
 		w.Write([]byte(body))
 		return
 	}
 	if requestInfo.Details.CustomJsonResponse["global"] != "" {
 		w.Header().Set(ContentType, JSON)
-		body := requestInfo.Details.CustomJsonResponse["global"]
 		w.WriteHeader(codeInt)
+		body := requestInfo.Details.CustomJsonResponse["global"]
 		w.Write([]byte(body))
 		return
 	}
@@ -157,5 +172,7 @@ func newErrorPageData(req *http.Request) (errorPageData errorPageData) {
 	errorPageData.Details.CustomFields = serviceDetailsMap[mapIdentifier].customFields
 	errorPageData.Details.DesiredDeploymentReplicas = serviceDetailsMap[mapIdentifier].desiredReplicas
 	errorPageData.Details.CurrentDeploymentReplicas = serviceDetailsMap[mapIdentifier].currentReplicas
+	errorPageData.Details.ForceResponseCode = serviceDetailsMap[mapIdentifier].forceResponseCode
+
 	return errorPageData
 }

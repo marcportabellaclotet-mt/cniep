@@ -30,6 +30,7 @@ type serviceDetails struct {
 	customFields        map[string]string
 	desiredReplicas     int32
 	currentReplicas     int32
+	forceResponseCode   map[string]string
 }
 
 type K8s struct {
@@ -123,6 +124,12 @@ func getServiceDetails(serviceName string, namespace string) (serviceDetails ser
 			}
 			customField := strings.Split(k, "cniep/customfield-")[1]
 			serviceDetails.customFields[customField] = v
+		case strings.HasPrefix(k, "cniep/forceresponsecode-"):
+			if serviceDetails.forceResponseCode == nil {
+				serviceDetails.forceResponseCode = make(map[string]string)
+			}
+			forceResponseCode := strings.Split(k, "cniep/forceresponsecode-")[1]
+			serviceDetails.forceResponseCode[forceResponseCode] = v
 		}
 	}
 	if serviceDetails.deployName == "" {
