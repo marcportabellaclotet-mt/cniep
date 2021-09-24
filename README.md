@@ -108,8 +108,8 @@ metadata:
 | --- | --- |
 | `cniep/template` | Defines the template used to render the error response pages|
 | `cniep/deployment` | Defines the deployment backend for the annotated service. If this annotation is not set, it will search for service selectors|
-| `customjsonresponse-xxx` | Renders a custom json response instead of a templated html page (status code specific)|
-| `customjsonresponse-global` | Renders a custom json response instead of a templated html page (all status codes)|
+| `cniep/customjsonresponse-xxx` | Renders a custom json response instead of a templated html page (status code specific)|
+| `cniep/customjsonresponse-global` | Renders a custom json response instead of a templated html page (all status codes)|
 | `cniep/s3-templatedir` |  Syncs templates stored in an AWS S3 bucket. i.e. cniep/s3-templatedir: s3://mys3bucket/cniep2|
 | `cniep/customfield-xxxx` | Define custom variables to be used in error response pages. In the [template](how-to-template) section, there is more information about this|
 | `cniep/forceresponsecode-xxx` | Forces the HTTP status code returned by the request |
