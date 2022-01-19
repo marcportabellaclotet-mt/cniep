@@ -143,6 +143,7 @@ func cniep(w http.ResponseWriter, r *http.Request) {
 	defer f.Close()
 	defer c.Close()
 	w.Header().Set(ContentType, HTML)
+	w.WriteHeader(codeInt)
 	tmpl := template.Must(template.ParseFiles(f.Name(), c.Name()))
 	tmpl.Execute(w, requestInfo)
 }

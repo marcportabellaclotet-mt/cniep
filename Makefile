@@ -22,7 +22,7 @@ build: main.go
 build-all: main.go
 	for arch in amd64; do \
 		for os in linux darwin; do \
-			CGO_ENABLED=0 GOOS=$$os GOARCH=$$arch go build -o "build/httpd_"$$os"_$$arch" $(LDFLAGS) ; \
+			CGO_ENABLED=0 GOOS=$$os GOARCH=$$arch go build -o "build/cniep_"$$os"_$$arch" $(LDFLAGS) ; \
 		done; \
 	done;
 	/bin/chmod +x build/*
